@@ -1,0 +1,12 @@
+/Users/anthonysmith/Projects/antCompress/antCompress/bin/Debug/netcoreapp3.1/antCompress.deps.json
+/Users/anthonysmith/Projects/antCompress/antCompress/bin/Debug/netcoreapp3.1/antCompress.runtimeconfig.json
+/Users/anthonysmith/Projects/antCompress/antCompress/bin/Debug/netcoreapp3.1/antCompress.runtimeconfig.dev.json
+/Users/anthonysmith/Projects/antCompress/antCompress/bin/Debug/netcoreapp3.1/antCompress.dll
+/Users/anthonysmith/Projects/antCompress/antCompress/bin/Debug/netcoreapp3.1/antCompress.pdb
+/Users/anthonysmith/Projects/antCompress/antCompress/obj/Debug/netcoreapp3.1/antCompress.csprojAssemblyReference.cache
+/Users/anthonysmith/Projects/antCompress/antCompress/obj/Debug/netcoreapp3.1/antCompress.AssemblyInfoInputs.cache
+/Users/anthonysmith/Projects/antCompress/antCompress/obj/Debug/netcoreapp3.1/antCompress.AssemblyInfo.cs
+/Users/anthonysmith/Projects/antCompress/antCompress/obj/Debug/netcoreapp3.1/antCompress.csproj.CoreCompileInputs.cache
+/Users/anthonysmith/Projects/antCompress/antCompress/obj/Debug/netcoreapp3.1/antCompress.dll
+/Users/anthonysmith/Projects/antCompress/antCompress/obj/Debug/netcoreapp3.1/antCompress.pdb
+/Users/anthonysmith/Projects/antCompress/antCompress/obj/Debug/netcoreapp3.1/antCompress.genruntimeconfig.cache
