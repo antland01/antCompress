@@ -13,6 +13,10 @@ namespace antCompress
         {
         }
 
+        /// <summary>Recruses through the tree to find the Character</summary>
+        /// <param name="symbol">Character to be found</param>
+        /// <param name="data">Three being traversed</param>
+        /// <returns> The tree</returns>
         public List<bool> Find(char symbol, List<bool> data)
         {
             // Leaf

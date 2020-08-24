@@ -16,12 +16,13 @@ namespace antCompress
 
         public Huffman()
         {
-            
-
 
         }
 
-        public void setCompressFile(string iContent)
+        /// <summary>Generates and returns the Huffman Tree for printing into the file</summary>
+        /// <param name="iContent">The content to be written to the file</param>
+        /// <returns>String array of each line of the Huffman Tree</returns>
+        public string[] getHuffmanTree(string iContent)
         {
             content = iContent;
             frequencies = new Dictionary<char, HuffmanNode>();
@@ -40,8 +41,31 @@ namespace antCompress
 
             HuffTree = TreeConstruction(frequencies);
             HuffBase = HuffTree.First().Value;
+
+            List<string> result = new List<string>();
+            int[] disctFrequencies = frequencies.Select(f => f.Value.Frequency).Distinct().ToArray();
+
+            if (frequencies.ContainsKey('\n'))
+            {
+                int newLineFreq = frequencies.Where(i => i.Key == '\n').Select(fr => fr.Value.Frequency).ToList()[0];
+                result.Add(newLineFreq + ":lb");
+            }
+
+            foreach (int freq in disctFrequencies)
+            {
+                List<char> sameFreq = frequencies.Where(i => i.Value.Frequency == freq && i.Key != '\n').Select(fr => fr.Key).ToList();
+                result.Add(freq + ":" + string.Join("", sameFreq));
+            }
+
+            // Adds the Delimiter
+            result.Add("###");
+
+            string[] arrayResult = result.ToArray();
+            return arrayResult;
         }
 
+        /// <summary>-To Be reworked!--</summary>
+        /// <param name="iContent">The ID of the client being returned</param>
         public void setDecompressFile(string[] iContent)
         {
             frequencies = new Dictionary<char, HuffmanNode>();
@@ -61,46 +85,14 @@ namespace antCompress
 
             }
 
-            //string[] fileContentArray = iContent.Split("###");
-            //string[] huffmanTreeArray = fileContentArray[0].Split("#");
-            //string fileRaw = fileContentArray[1];
-
-
-            //foreach (string character in huffmanTreeArray)
-            //{
-            //    Console.WriteLine(character);
-            //    char symbol = character.ToCharArray()[0];
-            //    int frequency = Convert.ToInt32(character.Substring(1));
-            //    frequencies.Add(symbol, new HuffmanNode() { Frequency = frequency, Symbol = symbol });
-            //}
-
             HuffTree = TreeConstruction(frequencies);
             HuffBase = HuffTree.First().Value;
         }
 
-        public string[] printHuffTree()
-        {
-            List<string> result = new List<string>();
-            int[] disctFrequencies = frequencies.Select(f=> f.Value.Frequency).Distinct().ToArray();
-
-            if (frequencies.ContainsKey('\n'))
-            {
-                int newLineFreq = frequencies.Where(i => i.Key == '\n').Select(fr => fr.Value.Frequency).ToList()[0];
-                result.Add(newLineFreq + ":lb");
-            }
-
-            foreach (int freq in disctFrequencies)
-            {
-               List<char> sameFreq = frequencies.Where(i => i.Value.Frequency == freq && i.Key != '\n').Select(fr => fr.Key).ToList();
-                result.Add(freq+":"+string.Join("",sameFreq));
-            }
-
-            string[] arrayResult = result.ToArray();
-
-            return arrayResult;
-        }
-
-       private Dictionary<Char, HuffmanNode> TreeConstruction(Dictionary<Char, HuffmanNode> frequencies)
+        /// <summary>Creates the Huffman Tree for use in Compression and Decompression</summary>
+        /// <param name="frequencies">The ID of the client being returned</param>
+        /// <returns> The next step of the frequincess</returns>
+        private Dictionary<Char, HuffmanNode> TreeConstruction(Dictionary<Char, HuffmanNode> frequencies)
         {
             // Returns the Frequencies as they have been all constructed.
             if (frequencies.Count==1)
@@ -130,6 +122,9 @@ namespace antCompress
 
         }
 
+        /// <summary>Compressses the file into a Byte array</summary>
+        /// <param name="id"></param>
+        /// <returns> The byte array of the file</returns>
         public byte[] compress()
         {
             List<bool> encodedSource = new List<bool>();
@@ -148,6 +143,10 @@ namespace antCompress
             return bytes;
 
         }
+
+        /// <summary>Decompresses the file contents provided.</summary>
+        /// <param name="fileContent">Byte array of the file to be decompressed</param>
+        /// <returns> String of the content of the file</returns>
         public string decompress(byte[] fileContent)
         {
             BitArray bits = new BitArray(fileContent);
@@ -183,7 +182,9 @@ namespace antCompress
 
         }
 
-
+        /// <summary>Detects whether or not the specified Node is the leaf or not</summary>
+        /// <param name="node">The Node to be checked</param>
+        /// <returns> True if Leaf, False if not</returns>
         public bool IsLeaf(HuffmanNode node)
         {
             return (node.Left == null && node.Right == null);
