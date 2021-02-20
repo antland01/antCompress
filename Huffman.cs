@@ -19,75 +19,6 @@ namespace antCompress
 
         }
 
-        /// <summary>Generates and returns the Huffman Tree for printing into the file</summary>
-        /// <param name="iContent">The content to be written to the file</param>
-        /// <returns>String array of each line of the Huffman Tree</returns>
-        public string[] getHuffmanTree(string iContent)
-        {
-            content = iContent;
-            frequencies = new Dictionary<char, HuffmanNode>();
-
-            foreach (char c in content)
-            {
-                if (frequencies.ContainsKey(c))
-                {
-                    frequencies[c].Frequency = frequencies[c].Frequency + 1;
-                }
-                else
-                {
-                    frequencies.Add(c, new HuffmanNode() { Frequency = 1, Symbol = c });
-                }
-            }
-
-            HuffTree = TreeConstruction(frequencies);
-            HuffBase = HuffTree.First().Value;
-
-            List<string> result = new List<string>();
-            int[] disctFrequencies = frequencies.Select(f => f.Value.Frequency).Distinct().ToArray();
-
-            if (frequencies.ContainsKey('\n'))
-            {
-                int newLineFreq = frequencies.Where(i => i.Key == '\n').Select(fr => fr.Value.Frequency).ToList()[0];
-                result.Add(newLineFreq + ":lb");
-            }
-
-            foreach (int freq in disctFrequencies)
-            {
-                List<char> sameFreq = frequencies.Where(i => i.Value.Frequency == freq && i.Key != '\n').Select(fr => fr.Key).ToList();
-                result.Add(freq + ":" + string.Join("", sameFreq));
-            }
-
-            // Adds the Delimiter
-            result.Add("###");
-
-            string[] arrayResult = result.ToArray();
-            return arrayResult;
-        }
-
-        /// <summary>-To Be reworked!--</summary>
-        /// <param name="iContent">The ID of the client being returned</param>
-        public void setDecompressFile(string[] iContent)
-        {
-            frequencies = new Dictionary<char, HuffmanNode>();
-
-            int delimiterIndex = Array.IndexOf(iContent, "###");
-
-            foreach (string line in iContent)
-            {
-                Console.WriteLine(line);
-                int frequenciesNo = Convert.ToInt32(line.Split(":")[0]);
-                foreach (char symbol in line.Skip(2))
-                {
-                frequencies.Add(symbol, new HuffmanNode() { Frequency = frequenciesNo, Symbol = symbol });
-
-                }
-
-
-            }
-
-            HuffTree = TreeConstruction(frequencies);
-            HuffBase = HuffTree.First().Value;
-        }
 
         /// <summary>Creates the Huffman Tree for use in Compression and Decompression</summary>
         /// <param name="frequencies">The ID of the client being returned</param>
@@ -125,8 +56,79 @@ namespace antCompress
         /// <summary>Compressses the file into a Byte array</summary>
         /// <param name="id"></param>
         /// <returns> The byte array of the file</returns>
-        public byte[] compress()
+        public byte[] compress(string iContent)
         {
+            content = iContent;
+            frequencies = new Dictionary<char, HuffmanNode>();
+
+            foreach (char c in content)
+            {
+                if (frequencies.ContainsKey(c))
+                {
+                    frequencies[c].Frequency = frequencies[c].Frequency + 1;
+                }
+                else
+                {
+                    frequencies.Add(c, new HuffmanNode() { Frequency = 1, Symbol = c });
+                }
+            }
+
+            HuffTree = TreeConstruction(frequencies);
+            HuffBase = HuffTree.First().Value;
+
+            List<string> result = new List<string>();
+            int[] disctFrequencies = frequencies.Select(f => f.Value.Frequency).Distinct().ToArray();
+
+            if (frequencies.ContainsKey('\n'))
+            {
+                int newLineFreq = frequencies.Where(i => i.Key == '\n').Select(fr => fr.Value.Frequency).ToList()[0];
+                result.Add(newLineFreq + "lb");
+            }
+
+            if (frequencies.ContainsKey(':'))
+            {
+                int newLineFreq = frequencies.Where(i => i.Key == ':').Select(fr => fr.Value.Frequency).ToList()[0];
+                result.Add(":" + newLineFreq + "DD");
+            }
+
+
+            foreach (int freq in disctFrequencies)
+            {
+                List<char> sameFreq = frequencies.Where(i => i.Value.Frequency == freq && i.Key != '\n' && i.Key != ':').Select(fr => fr.Key).ToList();
+                result.Add(":"+freq + string.Join("", sameFreq));
+            }
+
+            // Adds the Delimiter
+            result.Add("###");
+
+            string[] arrayResult = result.ToArray();
+              List<byte> bytesTest = new List<byte>();
+
+            //for (int i = 0; i < arrayResult.Length; i++)
+            //{
+            //    Console.WriteLine(arrayResult[i]);
+            //    char[] charArray = arrayResult[i].ToCharArray();
+
+            //        List<byte> characters = charArray.Select(s => (byte)s).ToList();
+            //        bytesTest.AddRange(characters);
+
+            //}
+
+           bytesTest.AddRange(String.Join("", arrayResult).ToCharArray().Select(s => (byte)s).ToList()); 
+
+            byte[] resultTest = bytesTest.ToArray();
+
+
+            var str = System.Text.Encoding.Default.GetString(resultTest);
+            string res = Encoding.UTF8.GetString(resultTest, 0, resultTest.Length);
+            string res2 = Encoding.ASCII.GetString(resultTest, 0, resultTest.Length);
+            string res3 = Encoding.Unicode.GetString(resultTest, 0, resultTest.Length);
+
+            
+
+            //  Console.WriteLine(str);
+            Console.WriteLine(res);
+
             List<bool> encodedSource = new List<bool>();
 
             for (int i = 0; i < content.Length; i++)
@@ -137,10 +139,23 @@ namespace antCompress
 
             BitArray bits = new BitArray(encodedSource.ToArray());
 
+            var oneBit = bits[2];
+
             byte[] bytes = new byte[bits.Length / 8 + (bits.Length % 8 == 0 ? 0 : 1)];
             bits.CopyTo(bytes, 0);
 
-            return bytes;
+            var comindedBytes = new List<byte>();
+            comindedBytes.AddRange(resultTest);
+            comindedBytes.AddRange(bytes);
+
+            string res4 = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+            string res5 = Encoding.ASCII.GetString(bytes, 0, bytes.Length); 
+            string res6 = Encoding.Unicode.GetString(bytes, 0, bytes.Length);
+            string res7 = Encoding.Default.GetString(bytes, 0, bytes.Length);
+            string res8 = Encoding.BigEndianUnicode.GetString(bytes, 0, bytes.Length);
+            string res9 = Encoding.Unicode.GetString(bytes, 0, bytes.Length);
+
+            return comindedBytes.ToArray();
 
         }
 
@@ -149,6 +164,54 @@ namespace antCompress
         /// <returns> String of the content of the file</returns>
         public string decompress(byte[] fileContent)
         {
+            var str = System.Text.Encoding.Default.GetString(fileContent);
+
+            string[] fileParts = str.Split(new string[] { "###" }, StringSplitOptions.None);
+
+            
+
+            string[] items = fileParts[0].Split(":");
+
+
+            frequencies = new Dictionary<char, HuffmanNode>();
+
+            foreach (string item in items)
+            {
+
+                string digits = new String(item.TakeWhile(Char.IsDigit).ToArray());
+                string indiviualItem = item.Replace(digits, "");
+
+      
+
+                if (indiviualItem == "lb")
+                {
+                    frequencies.Add('\n', new HuffmanNode() { Frequency = Convert.ToInt32(digits), Symbol = '\n' });
+                }
+                if (indiviualItem == "DD")
+                {
+                    frequencies.Add(':', new HuffmanNode() { Frequency = Convert.ToInt32(digits), Symbol = ':' });
+                }
+
+                if (indiviualItem != "DD" && indiviualItem != "lb")
+                {
+                    char[] invidualItems = indiviualItem.ToArray();
+
+                    foreach (char symbol in indiviualItem)
+                    {
+
+                        frequencies.Add(symbol, new HuffmanNode() { Frequency = Convert.ToInt32(digits), Symbol = symbol });
+
+                    }
+                }
+
+
+            }
+
+
+            HuffTree = TreeConstruction(frequencies);
+            HuffBase = HuffTree.First().Value;
+
+
             BitArray bits = new BitArray(fileContent);
 
             HuffmanNode current = this.HuffBase;

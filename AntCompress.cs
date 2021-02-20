@@ -14,8 +14,8 @@ namespace antCompress
             Huffman huffman = new Huffman();
 
             // Decompress
-            huffman.setDecompressFile(fileWrite.ReadLines(compressedFileName));
-            fileWrite.Write(huffman.decompress(fileWrite.ReadBytes(compressedFileName)), decompressResultFileName);
+          //  huffman.setDecompressFile(fileWrite.ReadLines(compressedFileName));
+          //  fileWrite.Write(huffman.decompress(fileWrite.ReadBytes(compressedFileName)), decompressResultFileName);
 
 
 

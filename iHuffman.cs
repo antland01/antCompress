@@ -6,8 +6,7 @@ namespace antCompress
 {
     public interface iHuffman
     {
-       public string[] getHuffmanTree(string iContent);
-       public Byte[] compress();
+       public Byte[] compress(string iContent);
        public string decompress(byte[] fileContent);
        public bool IsLeaf(HuffmanNode node);
     }
